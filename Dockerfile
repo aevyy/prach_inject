@@ -3,17 +3,43 @@ FROM ubuntu:22.04 AS builder
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential cmake pkg-config \
+    build-essential \
     libboost-system-dev libboost-program-options-dev libfftw3-dev libfmt-dev \
     libmbedtls-dev libyaml-cpp-dev libuhd-dev uhd-host libsctp-dev \
-    libconfig++-dev libmbedtls-dev \
-    ca-certificates git \
-    && rm -rf /var/lib/apt/lists/*
+    libconfig++-dev \
+    ca-certificates
+
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y \
+    cmake \
+    make \
+    gcc \
+    g++ \
+    pkg-config \
+    libzmq3-dev \
+    iproute2 \
+    uhd-host \
+    libgtest-dev \
+    iperf3 \
+    libfftw3-dev \
+    libmbedtls-dev \
+    libsctp-dev \
+    libyaml-cpp-dev \
+    net-tools \
+    libboost-all-dev \
+    libconfig++-dev \
+    libxcb-cursor0 \
+    libgles2-mesa-dev \
+    gr-osmosdr \
+    libuhd-dev \
+    git
 
 COPY srsRAN_4G /build/srsRAN_4G
 COPY src /build/src
+COPY tests /build/tests
 COPY CMakeLists.txt /build/
 COPY configs /build/configs
+COPY rt-recon-sdk /build/rt-recon-sdk
 
 RUN mkdir -p /build/srsRAN_4G/build && \
     cd /build/srsRAN_4G/build && \

@@ -49,14 +49,23 @@ set(SRSRAN_SRSLOG_LIBS "${SRSRAN_BUILD}/lib/src/srslog/libsrslog.a")
 set(SRSRAN_RF_LIB "${SRSRAN_BUILD}/lib/src/phy/rf/libsrsran_rf.so")
 
 # Transitive deps needed by libsrsran_phy and libsrsran_common
-pkg_check_modules(MBEDTLS REQUIRED mbedtls)
+find_path(MBEDTLS_INCLUDE_DIR mbedtls/ssl.h)
+find_library(MBEDTLS_LIBRARY mbedtls)
+find_library(MBEDX509_LIBRARY mbedx509)
+find_library(MBEDCRYPTO_LIBRARY mbedcrypto)
+if(NOT MBEDTLS_INCLUDE_DIR OR NOT MBEDTLS_LIBRARY)
+  message(FATAL_ERROR "mbedtls not found. Install libmbedtls-dev.")
+endif()
+
 pkg_check_modules(FMT REQUIRED fmt)
 pkg_check_modules(FFTW3F REQUIRED fftw3f)
 find_package(Boost REQUIRED COMPONENTS system)
 
 set(SRSRAN_COMMON_DEPS_LIBS
   ${SRSRAN_SRSLOG_LIBS}
-  ${MBEDTLS_LIBRARIES}
+  ${MBEDTLS_LIBRARY}
+  ${MBEDX509_LIBRARY}
+  ${MBEDCRYPTO_LIBRARY}
   ${FMT_LIBRARIES}
   ${FFTW3F_LIBRARIES}
   Boost::system
@@ -67,10 +76,10 @@ pkg_check_modules(UHD REQUIRED uhd)
 
 # rt-recon-sdk — shares influxdb.hpp schema with sni5gect-compact
 # Source files are compiled in directly (no separate build step required)
-set(RT_RECON_SDK "/home/avi/wireless/rt-recon-sdk")
-if(NOT EXISTS "${RT_RECON_SDK}/include/rt-recon-sdk/autoconfig/influx_worker.h")
-  message(FATAL_ERROR "rt-recon-sdk not found at ${RT_RECON_SDK}")
+if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/rt-recon-sdk/include/rt-recon-sdk/autoconfig/influx_worker.h")
+  message(FATAL_ERROR "rt-recon-sdk not found at ${CMAKE_CURRENT_SOURCE_DIR}/rt-recon-sdk")
 endif()
+set(RT_RECON_SDK "${CMAKE_CURRENT_SOURCE_DIR}/rt-recon-sdk")
 
 # Common sources for library
 set(LIB_SOURCES
