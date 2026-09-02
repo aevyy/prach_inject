@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake pkg-config \
     libboost-system-dev libboost-program-options-dev libfftw3-dev libfmt-dev \
     libmbedtls-dev libyaml-cpp-dev libuhd-dev uhd-host libsctp-dev \
-    libconfig++-dev \
+    libconfig++-dev libmbedtls-dev \
     ca-certificates git \
     && rm -rf /var/lib/apt/lists/*
 
