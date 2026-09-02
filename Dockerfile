@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake pkg-config \
-    libboost-system-dev libfftw3-dev libfmt-dev \
+    libboost-system-dev libboost-program-options-dev libfftw3-dev libfmt-dev \
     libmbedtls-dev libyaml-cpp-dev libuhd-dev uhd-host \
     libconfig++-dev \
     ca-certificates git \
